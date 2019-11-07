@@ -32,10 +32,6 @@ client.on('message', message => {
 	const args = message.content.slice(prefix.length).split(/ +/);
 	const command_name = args.shift().toLowerCase();
 
-	console.log('command executed!')
-	console.log(`command name: ${command_name}`);
-	console.log(`command args: ${args}\n`);
-
 	const command = client.commands.get(command_name) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command_name));
 
 	if (!command)
@@ -62,7 +58,7 @@ client.on('message', message => {
 	} catch (error) {
 
 		message.channel.send('there was an error trying to execute that command!');
-		console.error(error);
+		console.log(`\nError: ${error}`);
 
 	}
 });

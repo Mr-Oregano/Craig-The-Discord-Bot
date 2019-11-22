@@ -9,7 +9,7 @@ const { prefix, token } = require('./config.json');
 const fs = require('fs');
 
 // Constants
-const regex_split = /(?:[^\s"']+|['"][^'"]*["'])+/g;
+const regex_split = /[^\s"']+|"([^"]*)"|'([^']*)'/g;
 
 const client = new discord.Client();
 client.commands = new discord.Collection();
@@ -36,13 +36,13 @@ client.on('message', cxt => {
 
 	for (var i = 0; i < args.length; ++i)
 		args[i] = args[i].replace(/^["']|["']$/g, '');
-	
+
 	const command_name = args.shift().toLowerCase();
 	const command = client.commands.get(command_name) 
 				 || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command_name));
 
 	if (!command)
-		return cxt.channel.send('Invalid command, use $help for a list of valid commands');
+		return cxt.channel.send('Invalid command, use \`$help\` for a list of valid commands');
 
 	if (command.guild && cxt.channel.type !== 'text')
 		return cxt.channel.send('This is a guild command!');
@@ -52,7 +52,7 @@ client.on('message', cxt => {
 		let reply = 'This commmand requires arguments!';
 
 		if (command.usage)
-			reply += ` Usage: \`\`\`css\n${prefix}${command_name} ${command.usage}\`\`\``;
+			reply += `\nUsage: \`${prefix}${command_name} ${command.usage}\``;
 
 		return cxt.channel.send(reply);
 

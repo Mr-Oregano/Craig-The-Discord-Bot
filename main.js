@@ -8,6 +8,9 @@ const { prefix, token } = require('./config.json');
 // FS
 const fs = require('fs');
 
+// Constants
+const regex_split = /(?:[^\s"']+|['"][^'"]*["'])+/g;
+
 const client = new discord.Client();
 client.commands = new discord.Collection();
 
@@ -25,39 +28,43 @@ client.once('ready', () => {
 
 });
 
-client.on('message', message => {
-	if (!message.content.startsWith(prefix) || message.author.bot)
+client.on('message', cxt => {
+	if (!cxt.content.startsWith(prefix) || cxt.author.bot)
 		return;
 
-	const args = message.content.slice(prefix.length).split(/ +/);
-	const command_name = args.shift().toLowerCase();
+	const args = cxt.content.slice(prefix.length).match(regex_split);
 
-	const command = client.commands.get(command_name) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command_name));
+	for (var i = 0; i < args.length; ++i)
+		args[i] = args[i].replace(/^["']|["']$/g, '');
+	
+	const command_name = args.shift().toLowerCase();
+	const command = client.commands.get(command_name) 
+				 || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command_name));
 
 	if (!command)
-		return message.channel.send('Command not found!');
+		return cxt.channel.send('Invalid command, use $help for a list of valid commands');
 
-	if (command.guild && message.channel.type !== 'text')
-		return message.channel.send('I can\'t execute that command inside DMs!');
+	if (command.guild && cxt.channel.type !== 'text')
+		return cxt.channel.send('This is a guild command!');
 
 	if (command.args && !args.length) {
 
 		let reply = 'This commmand requires arguments!';
 
 		if (command.usage)
-			reply += `\nusage: *${command.usage}*`;
+			reply += ` Usage: \`\`\`css\n${prefix}${command_name} ${command.usage}\`\`\``;
 
-		return message.channel.send(reply);
+		return cxt.channel.send(reply);
 
 	}
 
 	try {
 
-		command.execute(message, args);
+		command.execute(cxt, args);
 
 	} catch (error) {
 
-		message.channel.send('there was an error trying to execute that command!');
+		cxt.channel.send('there was an error trying to execute that command!');
 		console.log(`\nError: ${error}`);
 
 	}

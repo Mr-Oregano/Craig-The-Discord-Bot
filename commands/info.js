@@ -7,10 +7,10 @@ module.exports = {
     args: false,
     guild: true,
 
-	execute(message, args) {
-		message.channel.send(
+	async execute(cxt, args) {
+		cxt.channel.send(
 
-			`Server name: **${message.guild.name}**\nCreated: ${message.guild.createdAt}\nTotal members: ${message.guild.memberCount}`
+			`Server name: **${cxt.guild.name}**\nCreated: ${cxt.guild.createdAt}\nTotal members: ${cxt.guild.memberCount}`
 
 		);
 	},

@@ -15,11 +15,10 @@ const client = new discord.Client();
 client.commands = new discord.Collection();
 
 const commands = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-for (const file of commands) {
-
+for (const file of commands) 
+{
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.name, command);
-
 }
 
 client.once('ready', () => {

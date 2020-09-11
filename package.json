@@ -1,12 +1,12 @@
 {
   "name": "craig",
-  "version": "1.0.0",
+  "version": "0.1.1",
   "description": "A utility bot for Discord",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Xamser7",
+  "author": "Sympleque",
   "license": "ISC",
   "dependencies": {
     "bufferutil": "^4.0.1",

@@ -1,5 +1,5 @@
 
-const cmd_usage = '[amount]{1 - 99}'
+const cmd_usage = '<amount>'
 
 module.exports = {
 
@@ -10,24 +10,21 @@ module.exports = {
     args: true,
     guild: false,
 
-	async execute(cxt, args) {
-
+    async execute(msg, args) 
+    {
         let amount = parseInt(args[0]);
 
         if (isNaN(amount))
-            return cxt.channel.send("The specified argument is *not* a number");
+            return msg.channel.send("The specified argument is *not* a number");
 
         if (amount < 1 || amount > 99)
-            return cxt.channel.send(`Argument must be in the range of 1 - 99\nusage: ${cmd_usage}`);
+            return msg.channel.send(`Argument must be in the range of [1, 99]\nusage: ${cmd_usage}`);
 
-        deleteMessages(cxt.channel, amount + 1);  
-
+        deleteMessages(msg.channel, amount + 1);  
 	},
 };
 
 async function deleteMessages(channel, amount)
 {
-
     return channel.bulkDelete(amount, true);
-
 }

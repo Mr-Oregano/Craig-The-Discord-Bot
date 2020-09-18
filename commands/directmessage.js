@@ -1,65 +1,46 @@
-
 module.exports = {
 
 	name: 'directmessage',
     aliases: ['dm'],
     description: 'Messages mentioned guild members with the specified message',
-    usage: '[mention] ... [message]',
+    usage: '<User> ... <Announcement>',
     args: true,
     guild: true,
 
-	async execute(cxt, args) {
+    async execute(msg, args) 
+    {
+        let announcement = args[args.length - 1];
 
-        if (!cxt.guild.available)
-            return;
-
-        let msg = args[args.length - 1];
-
-        if (cxt.mentions.everyone)
+        if (msg.mentions.everyone)
         {
-
-            BroadcastMessage(cxt.guild.members, msg);
+            // everyone tag does not list all members
+            Broadcast(msg.guild.members, announcement);
             return;
-
         }
 
-        BroadcastMessage(cxt.mentions.members, msg);
-
+        Broadcast(msg.mentions.members, announcement);
 	},
 };
 
-function BroadcastMessage(members, message)
+async function Broadcast(members, announcement)
 {
-
-    console.log(`\nBroadcasting message: ${message}\n`);
-
     let iterator = members.values();
     let member_itr = iterator.next();
 
     while (!member_itr.done)
     {
-
         let member = member_itr.value;
-
         if (member.user.bot)
         {
-
             member_itr = iterator.next();
             continue;
-
         }
         
-        MessageMember(member, message);
+        // Must await to wait for channel handle
+        let channel = await member.createDM();
+        //
+
+        channel.send(announcement);
         member_itr = iterator.next();
-
     }
-
-}
-async function MessageMember(member, message)
-{ 
-
-    console.log(`Sending direct message to: ${member.displayName}`);
-    let dm = await member.createDM();
-    return await dm.send(message);
-
 }

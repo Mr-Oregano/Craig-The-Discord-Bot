@@ -1,58 +1,55 @@
 
 const Discord = require('discord.js');
-const { prefix } = require('./config.json');
 const FileSystem = require('fs');
+const CraigConfig = require('./config.json');
+
+const { parse } = require("discord-command-parser");
+const { parser } = require('args-command-parser');
 
 const client = new Discord.Client();
-client.commands = new Discord.Collection();
+const modules = new Discord.Collection();
 
-const commands = FileSystem.readdirSync('./commands').filter(file => file.endsWith('.js'));
-for (const file of commands) 
+for (const module of FileSystem.readdirSync('./commands').filter(file => file.endsWith('.js'))) 
 {
-	const command = require(`./commands/${file}`);
-	client.commands.set(command.name, command);
+	const command = require(`./commands/${module}`);
+	modules.set(command.name, command);
 }
 
-client.on('message', msg => 
+function OnUpdate(msg)
 {
-	if (!msg.content.startsWith(prefix) || msg.author.bot)
+	if (!msg.content.startsWith(CraigConfig.prefix) || msg.author.bot)
 		return;
 
-	const args = msg.content.slice(prefix.length).match(/(?<=")[^"]+(?=")|[^\s"']+/g);
+	const tokens = parse(msg, CraigConfig.prefix);
+	if (!tokens.success)
+		return; // TODO: Provide feedback to the user
 
-	const command_name = args.shift().toLowerCase();
-	const command = client.commands.get(command_name) 
-				 || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(command_name));
+	const args = parser(tokens.arguments).data;
+	const module = modules.get(tokens.command) || modules.find(cmd => cmd.aliases && cmd.aliases.includes(tokens.command));
 
-	if (!command)
-		return msg.channel.send('Invalid command, use \`$help\` for a list of valid commands');
+	if (!module)
+		return msg.channel.send(`\`${tokens.command}\` is not a runnable command`);
 
-	if (command.guild && msg.channel.type !== 'text')
+	if (module.guild && msg.channel.type !== 'text')
 		return msg.channel.send('This is a guild command!');
 
-	if (command.args && !args.length) 
+	console.log(args);
+	if (module.args && args.commands.length < 1) 
 	{
 		let reply = 'This commmand requires arguments!';
-		if (command.usage)
-			reply += `\nUsage: \`${prefix}${command_name} ${command.usage}\``;
-
+		if (module.usage)
+			reply += `\nUsage: \`${CraigConfig.prefix}${tokens.command} ${module.usage}\``;
 		return msg.channel.send(reply);
 	}
 
-	try 
-	{
-		command.execute(msg, args);
-	} 
-	catch (error) 
-	{
-		msg.channel.send('There was an error trying to execute that command!');
-		console.log(`\nError: ${error}`);
-	}
-});
+	module.execute(msg, args);
+}
 
-client.once('ready', () => 
+function OnStart()
 {
 	console.log('Craig has connected to the server!');
-});
+}
 
+client.on('message', OnUpdate);
+client.once('ready', OnStart);
 client.login(process.env.BOT_TOKEN);

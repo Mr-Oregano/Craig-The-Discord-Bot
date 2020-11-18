@@ -1,30 +1,22 @@
-
-const cmd_usage = '<amount>'
-
 module.exports = {
 
 	name: 'clear',
     aliases: ['delete', 'erase', 'delete-messages', 'erase-messages', 'delete-msg', 'erase-msg'],
 	description: 'Clears *n* messages in current channel stated by the *arg*',
-    usage: cmd_usage,
+    usage: "<amount>",
     args: true,
-    guild: false,
+    guild: true,
 
     async execute(msg, args) 
     {
-        let amount = parseInt(args[0]);
+        let amount = parseInt(args[1]);
 
         if (isNaN(amount))
             return msg.channel.send("The specified argument is *not* a number");
 
-        if (amount < 1 || amount > 99)
-            return msg.channel.send(`Argument must be in the range of [1, 99]\nusage: ${cmd_usage}`);
+        for (; amount > 0; amount -= 100)
+            await msg.channel.bulkDelete(Math.min(amount, 100), true);
 
-        deleteMessages(msg.channel, amount + 1);  
-	},
+        msg.channel.send(`Deleted messages.`).then(msg => msg.delete({ timeout: 1000 }));
+	}
 };
-
-async function deleteMessages(channel, amount)
-{
-    return channel.bulkDelete(amount, true);
-}

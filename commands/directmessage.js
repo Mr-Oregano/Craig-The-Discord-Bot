@@ -24,23 +24,13 @@ module.exports = {
 
 async function Broadcast(members, announcement)
 {
-    let iterator = members.values();
-    let member_itr = iterator.next();
-
-    while (!member_itr.done)
+    for (const [, member ] of members)
     {
-        let member = member_itr.value;
         if (member.user.bot)
-        {
-            member_itr = iterator.next();
             continue;
-        }
         
         // Must await to wait for channel handle
         let channel = await member.createDM();
-        //
-
         channel.send(announcement);
-        member_itr = iterator.next();
     }
 }

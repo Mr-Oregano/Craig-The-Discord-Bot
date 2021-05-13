@@ -3,7 +3,7 @@ module.exports = {
 	name: 'clear',
 	aliases: ['delete', 'erase', 'delete-messages', 'erase-messages', 'delete-msg', 'erase-msg'],
 	description: 'Clears *n* messages in current channel stated by the *arg*',
-	usage: "<Amount>",
+	usage: "<AMOUNT>",
 	args: true,
 	guild: true,
 

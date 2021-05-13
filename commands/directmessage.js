@@ -3,7 +3,7 @@ module.exports = {
 	name: 'directmessage',
 	aliases: ['dm'],
 	description: 'Messages mentioned guild members with the specified message',
-	usage: '<User...> <Message>',
+	usage: '<USER...> <MESSAGE>',
 	args: true,
 	guild: true,
 

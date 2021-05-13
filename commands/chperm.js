@@ -7,7 +7,7 @@ module.exports = {
 
 	name: 'chperm',
 	description: 'Sets the user(s) permissions for the current channel (or other channels specified by different options)',
-	usage: '<User...> [Options ...]',
+	usage: '<PERMS> <USER...> [CHANNEL...] [OPTIONS ...]',
 	args: true,
 	guild: true,
 
@@ -20,7 +20,7 @@ module.exports = {
 		{
 			name: 'echo',
 			aliases: [ 'e' ],
-			description: 'Outputs <User>\'s *current* permisions in mentioned channels if it is allowed *and* present in bitfield. (Has no effect on permissions).'
+			description: 'Outputs <User>\'s *current* permisions in mentioned channels which are allowed *and* present in bitfield. (Has no effect on permissions).'
 		},
 		{
 			name: 'negate',

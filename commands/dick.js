@@ -33,7 +33,7 @@ module.exports = {
 	name: 'dick',
 	aliases: ['penis', 'cock', 'rooster'],
 	description: 'Slimey and Gooey',
-	usage: "[User]",
+	usage: "[USER]",
 	args: false,
 	guild: true,
 

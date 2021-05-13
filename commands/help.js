@@ -8,7 +8,7 @@ module.exports = {
 
 	name: 'help',
 	description: 'Displays a list of all commands or detailed information for specified command',
-	usage: '[Command]',
+	usage: '[COMMAND]',
 	aliases: ['commands', 'cmds', 'h', 'hlp'],
 	
 	async execute(msg, body) 

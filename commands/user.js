@@ -6,7 +6,7 @@ module.exports = {
 	name: 'user',
 	aliases: ['member', 'profile'],
 	description: 'Shows information about the specified user',
-	usage: '<User>',
+	usage: '<USER>',
 	args: true,
 	guild: true,
 

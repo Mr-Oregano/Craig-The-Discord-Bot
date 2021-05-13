@@ -16,7 +16,7 @@ module.exports = {
 		const embed = new MessageEmbed()
 			.setColor(0x5cb3ff)
 			.setTitle(guild.name)
-			.setURL('https://discord.gg/pNrzXpS')
+			.setURL('https://discord.gg/pNrzXpS') // TODO: make this dynamic
 			.setDescription(guild.description || '')
 			.setThumbnail(guild.iconURL())
 			.addFields(

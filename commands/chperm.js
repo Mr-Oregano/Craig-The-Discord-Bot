@@ -1,6 +1,7 @@
 // TODO: fix bug, doesn't work for multiple channels or members
 
 const { Permissions } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 
@@ -13,70 +14,113 @@ module.exports = {
 	flags: [
 		{
 			name: 'all-except',
+			aliases: [ 'a' ],
 			description: 'Sets specified permissions for every channel except channel(s) in question.'
 		},
 		{
 			name: 'echo',
 			aliases: [ 'e' ],
-			description: 'Returns <User> permisions in mentioned channels.'
+			description: 'Outputs <User>\'s *current* permisions in mentioned channels if it is allowed *and* present in bitfield. (Has no effect on permissions).'
 		},
 		{
 			name: 'negate',
 			aliases: [ 'n' ],
-			description: 'disallow the specified permissions for the specified channel(s)'
+			description: '*disallow* the specified permissions for the specified channel(s)'
 		}
 	],
 
 	async execute(msg, body) 
 	{
-		// const guild = msg.channel.guild;
-		// const newperms_bitfield = parseInt(args.commands[0]);
-		// const newperms = new Object();
+		const newperms_bitfield = parseInt(body.args[0]);
 
-		// for (const perm of new Permissions(newperms_bitfield).toArray())
-		//     newperms[perm] = !(args.shortSwitches.n || args.shortSwitches.negate);
+		if (isNaN(newperms_bitfield))
+		{
+			msg.channel.send('You must specify the permissions bitfield as the first argument!');
+			return;
+		}
 
-		// let channels = new Map(); channels.set(0, msg.channel);
-		// let members = msg.mentions.members;
+		const newperms = new Object();
 
-		// if (msg.mentions.members.length < 1)
-		// {
-		//     msg.channel.send("You must specify atleast 1 user.");
-		//     return;
-		// }
+		for (const perm of new Permissions(newperms_bitfield).toArray())
+			newperms[perm] = !body.flags.negate;
 
-		// if (args.longSwitches['all-except'])
-		//     channels = guild.channels.cache;
+		let members = GetSelectedMembers(msg);
 
-		// else if (msg.mentions.channels.size > 0)
-		//     channels = msg.mentions.channels;
+		if (members.size < 1)
+		{
+			msg.channel.send("You must specify atleast one user.");
+			return;
+		}
 
-		// for (const [, member ] of members)
-		// {
-		//     for (const [ id, channel ] of channels)
-		//     {
-		//         if (channel.type === 'category' || channel.type === 'voice')
-		//             continue;
+		let channels = GetSelectedChannels(msg, body.flags['all-except']); 
 
-		//         if (args.longSwitches['all-except'] && msg.mentions.channels.has(id))
-		//             continue;
+		for (const member of members)
+		{
+			for (const channel of channels)
+			{
+				if (channel.type === 'category' || channel.type === 'voice')
+					continue;
 
-		//         if (args.shortSwitches.e || args.longSwitches.echo)
-		//         {
-		//             msg.channel.send(
-		//                 `Permissions for ${member.user.username} in ${channel.name}:\n` + 
-		//                 new Permissions(current_perms).serialize());
+				if (body.flags.echo)
+				{
+					const embed = new MessageEmbed()
+						.setColor(0x5cb3ff)
+						.setTitle(`Allowed permissions for ${member.user.username}`)
+						.setDescription(`in ${channel.name}`)
+						.setThumbnail(member.user.avatarURL());
 
-		//             continue;
-		//         }
+					let permissionStr = '';
+					for (const [ key ] of Object.entries(member.permissions.serialize()))
+						if (newperms[key])
+							permissionStr += ` - ${key.toLowerCase()}\n`;
 
-		//         channel.updateOverwrite(member.user, newperms);
-		//     }
-		// }
+					embed.addField('Permissions', permissionStr);
+					msg.channel.send(embed);
+					continue;
+				}
 
-		// msg.react('👌');
+				channel.updateOverwrite(member.user, newperms);
+			}
+		}
 
-				
+		msg.react('👌');
 
 	}
 };
+
+function GetSelectedMembers(msg)
+{
+	let result = new Set();
+
+	for (const [, member] of msg.mentions.members)
+		result.add(member);
+
+	for (const [, role] of msg.mentions.roles)
+	{
+		for (const [, member] of role.members)
+			result.add(member);
+	}
+		
+	return result;
+}
+
+function GetSelectedChannels(msg, allexcept)
+{
+	let result = new Set(); 
+	
+	if (allexcept)
+	{
+		for (const [ id, channel ] of msg.guild.channels.cache)
+			if (!msg.mentions.channels.has(id))
+				result.add(channel);
+	}
+	
+	else if (msg.mentions.channels.size)
+		for (const [, channel] of msg.mentions.channels)
+			result.add(channel);
+
+	else
+		result.add(msg.channel);
+
+	return result;
+}

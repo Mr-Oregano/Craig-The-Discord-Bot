@@ -23,6 +23,7 @@ function OnMessage(msg)
 function OnStart()
 {
 	console.log('Craig has connected to the server!');
+	client.user.setActivity('your mom naked 😏', { type: 'WATCHING' });
 }
 
 client.on('message', OnMessage);

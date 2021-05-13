@@ -5,3 +5,4 @@ push.bat
 pull.bat
 run.bat
 .eslintrc.json
+.sqlite

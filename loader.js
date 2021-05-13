@@ -2,7 +2,8 @@
 // Dependencies
 const Discord = require('discord.js');
 
-const CraigConfig = require('./config.json');
+const CraigConfig = require('./data/config.json');
+const Database = require('./data/database.js');
 const CommandParser = require('./command-parser.js');
 
 const client = new Discord.Client();
@@ -22,6 +23,8 @@ function OnMessage(msg)
 
 function OnStart()
 {
+	Database.Initialize();
+
 	console.log('Craig has connected to the server!');
 	client.user.setActivity('your mom naked 😏', { type: 'WATCHING' });
 }

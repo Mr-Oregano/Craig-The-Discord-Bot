@@ -30,9 +30,9 @@ module.exports = {
 		}
 	],
 
-	execute(msg, body) 
+	execute(msg, cmd) 
 	{
-		const newperms_bitfield = parseInt(body.args[0]);
+		const newperms_bitfield = parseInt(cmd.args[0]);
 
 		if (isNaN(newperms_bitfield))
 		{
@@ -43,7 +43,7 @@ module.exports = {
 		const newperms = new Object();
 
 		for (const perm of new Permissions(newperms_bitfield).toArray())
-			newperms[perm] = !body.flags.negate;
+			newperms[perm] = !cmd.flags.negate;
 
 		let members = GetSelectedMembers(msg);
 
@@ -53,7 +53,7 @@ module.exports = {
 			return;
 		}
 
-		let channels = GetSelectedChannels(msg, body.flags['all-except']); 
+		let channels = GetSelectedChannels(msg, cmd.flags['all-except']); 
 
 		for (const member of members)
 		{
@@ -62,7 +62,7 @@ module.exports = {
 				if (channel.type === 'category' || channel.type === 'voice')
 					continue;
 
-				if (body.flags.echo)
+				if (cmd.flags.echo)
 				{
 					const embed = new MessageEmbed()
 						.setColor(0x5cb3ff)

@@ -20,15 +20,15 @@ module.exports = {
 		},
 	],
 
-	execute(msg, body) 
+	execute(msg, cmd) 
 	{
 		let announcement = undefined;
 		
-		if (body.flags.message)
-			announcement = body.flags.message[0];
+		if (cmd.flags.message)
+			announcement = cmd.flags.message[0];
 
-		else if (body.args.length > 0)
-			announcement = body.args[body.args.length - 1];
+		else if (cmd.args.length > 0)
+			announcement = cmd.args[cmd.args.length - 1];
 
 		if (!announcement)
 		{
@@ -36,7 +36,7 @@ module.exports = {
 			return;
 		}
 
-		if (msg.mentions.everyone || body.flags.everyone)
+		if (msg.mentions.everyone || cmd.flags.everyone)
 		{
 			// everyone tag does not list all members
 			Broadcast(msg.guild.members.cache, announcement);

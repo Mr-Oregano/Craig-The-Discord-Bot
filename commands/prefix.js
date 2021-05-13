@@ -19,11 +19,11 @@ module.exports = {
 		}
 	],
 
-	execute(msg, body) 
+	execute(msg, cmd) 
 	{
-		if (body.flags.set)
+		if (cmd.flags.set)
 		{
-			msg.channel.send(`The prefix has been set to \`${body.flags.set[0]}\``);
+			msg.channel.send(`The prefix has been set to \`${cmd.flags.set[0]}\``);
 			return;
 		}
 		

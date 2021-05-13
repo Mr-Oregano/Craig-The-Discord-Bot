@@ -11,18 +11,18 @@ module.exports = {
 	usage: '[COMMAND]',
 	aliases: ['commands', 'cmds', 'h', 'hlp'],
 	
-	execute(msg, body) 
+	execute(msg, cmd) 
 	{
 		const embed = new MessageEmbed();
 		embed.setColor(Math.floor(Math.random() * 0xffffff));
 
-		if (body.args.length > 0)
+		if (cmd.args.length > 0)
 		{
-			let module = CommandModules.modules.get(body.args[0]);
+			let module = CommandModules.modules.get(cmd.args[0]);
 
 			if (!module || (module.admin && !msg.member.permissions.has('ADMINISTRATOR')))
 			{
-				msg.channel.send(`The command '${body.args[0]}' was not found!`);
+				msg.channel.send(`The command '${cmd.args[0]}' was not found!`);
 				return;
 			}
 

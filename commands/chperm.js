@@ -36,7 +36,7 @@ module.exports = {
 
 		if (isNaN(newperms_bitfield))
 		{
-			msg.channel.send('You must specify the permissions bitfield as the first argument!');
+			msg.reply('You must specify the permissions bitfield as the first argument!');
 			return;
 		}
 
@@ -49,7 +49,7 @@ module.exports = {
 
 		if (members.size < 1)
 		{
-			msg.channel.send("You must specify atleast one user.");
+			msg.reply("You must specify atleast one user.");
 			return;
 		}
 

@@ -22,7 +22,7 @@ module.exports = {
 
 			if (!module || (module.admin && !msg.member.permissions.has('ADMINISTRATOR')))
 			{
-				msg.channel.send(`The command '${cmd.args[0]}' was not found!`);
+				msg.reply(`The command '${cmd.args[0]}' was not found!`);
 				return;
 			}
 

@@ -32,7 +32,7 @@ module.exports = {
 
 		if (!announcement)
 		{
-			msg.channel.send("You must specify the message as an argument or using the -m flag!");
+			msg.reply("You must specify the message as an argument or using the -m flag!");
 			return;
 		}
 

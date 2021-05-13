@@ -12,7 +12,7 @@ module.exports = {
 		let amount = parseInt(cmd.args[0]);
 
 		if (isNaN(amount))
-			return msg.channel.send("The specified argument is *not* a number");
+			return msg.reply("The specified argument is *not* a number");
 
 		for (; amount > 0; amount -= 100)
 			await msg.channel.bulkDelete(Math.min(amount, 100), true);

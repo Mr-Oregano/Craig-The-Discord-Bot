@@ -21,25 +21,25 @@ module.exports = {
 
 		if (!command_module)
 		{
-			msg.channel.send("Command not found!");
+			msg.reply("Command not found!");
 			return;
 		}
 
 		if (command_module.admin && !msg.member.permissions.has('ADMINISTRATOR'))
 		{
-			msg.channel.send("This command can only be used by an admin you silly dick!");
+			msg.reply("This command can only be used by an admin you silly dick!");
 			return;
 		}
 
 		if (command_module.guild && msg.channel.type !== 'text')
 		{
-			msg.channel.send("This is a guild command can only be used in 'text' channel!");
+			msg.reply("This is a guild command can only be used in 'text' channel!");
 			return;
 		}
 			
 		if (command_module.args && args.commands.length < 1)
 		{
-			msg.channel.send("This command requires arguments!");
+			msg.reply("This command requires arguments!");
 			return;
 		}
 
@@ -52,7 +52,7 @@ module.exports = {
 		{
 			if (Object.keys(switches).length > 0)
 			{
-				msg.channel.send('This command does not use flags');
+				msg.reply('This command does not use flags');
 				return;
 			}
 
@@ -67,13 +67,13 @@ module.exports = {
 
 			if (!key)
 			{
-				msg.channel.send(`Unknown option '${s}'`);
+				msg.reply(`Unknown option '${s}'`);
 		 		return;
 			}
 
 			if (key.args && key.args != switches[s].length)
 			{
-				msg.channel.send(`'${s}' requires ${key.args} argument(s)`);
+				msg.reply(`'${s}' requires ${key.args} argument(s)`);
 				return;
 			}
 

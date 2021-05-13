@@ -1,3 +1,7 @@
+
+// dependencies
+const CommandModules = require('../command-modules.js');
+
 module.exports = {
 
 	name: 'reload',
@@ -7,6 +11,7 @@ module.exports = {
 
     async execute(msg, args) 
     {
-        // TODO: Implement hot command module reload
+        CommandModules.LoadCommandModules();
+        msg.react('👌');
 	},
 };

@@ -7,9 +7,9 @@ module.exports = {
     args: true,
     guild: true,
 
-    async execute(msg, args) 
+    async execute(msg, body) 
     {
-        let announcement = args[args.length - 1];
+        let announcement = body.args[body.args.length - 1];
 
         if (msg.mentions.everyone)
         {

@@ -7,9 +7,9 @@ module.exports = {
     args: true,
     guild: true,
 
-    async execute(msg, args) 
+    async execute(msg, body) 
     {
-        let amount = parseInt(args[1]);
+        let amount = parseInt(body.args[0]);
 
         if (isNaN(amount))
             return msg.channel.send("The specified argument is *not* a number");

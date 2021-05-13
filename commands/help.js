@@ -2,49 +2,80 @@
 // Dependencies
 const CraigConfig = require('../config.json');
 const CommandModules = require('../command-modules.js');
+const { MessageEmbed } = require("discord.js");
 
 module.exports = {
 
 	name: 'help',
     description: 'Displays a list of all commands or detailed information for specified command',
-    usage: '[command_name]',
 	aliases: ['commands', 'cmds', 'h', 'hlp'],
     
     async execute(msg, body) 
     {
-        for (const module of CommandModules.modules)
+        const embed = new MessageEmbed();
+        embed.setColor(Math.floor(Math.random() * 0xffffff));
+
+        if (body.args.length > 0)
         {
-            console.log(module);
+            let module = CommandModules.modules.get(body.args[0]);
+
+            if (!module)
+            {
+                msg.channel.send(`The command '${body.args[0]}' was not found!`);
+                return;
+            }
+
+            embed.setTitle(module.name);
+            embed.setDescription(module.description || 'No description provided.');
+            embed.addField('Usage', `${module.name} ${module.usage || ''}`);
+
+            if (module.aliases) 
+                embed.addField('Aliases', AliasesToString(module.aliases));
+
+            if (module.flags) 
+                embed.addField('Flags', FlagsToString(module.flags));
+            
+            msg.channel.send(embed);
+            return;
         }
 
-        // const data = [];
-        // const { commands } = msg.client;
+        embed.setTitle('Commands');
 
-        // if (!args.length)
-        // {
-        //     data.push('The following is a list of valid commands:\n');
-        //     data.push(commands.map(command => command.name).join('\n'));
-        //     data.push(`\nuse \`${prefix}help [command name]\` to get info on a specific command!`);
+        let commands = "";
+        for (const [,module] of CommandModules.modules)
+            commands += `${CraigConfig.prefix}${module.name}\n`;
 
-        //     return msg.channel.send(data, { split: true });
-        // }
-
-        // const name = args[0].toLowerCase();
-        // const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
-
-        // if (!command) 
-        //     return msg.reply('Invalid command!');
-
-        // data.push(`**Name:** ${command.name}`);
-
-        // if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
-        // if (command.description) data.push(`**Description:** ${command.description}`);
-        
-        // if (command.usage) 
-        //     data.push(`**Usage:** \`${prefix}${command.name} ${command.usage}\``);
-        // else
-        //     data.push(`**Usage:** \`${prefix}${command.name}\``)
-
-        // msg.channel.send(data, { split: true });
+        embed.addField('Commands usable in this channel', commands);
+        msg.channel.send(embed);
+       
 	},
 };
+
+function AliasesToString(aliases)
+{
+    return aliases.join(', ');
+}
+
+function FlagsToString(flags)
+{
+    let str = "";
+
+    for (const flag of flags) 
+    {
+        let names = [ flag.name ];
+
+        if (flag.aliases)
+            names = names.concat(flag.aliases);
+
+        for (const name of names) 
+        {
+            str += name.length > 1 ? '--' : '-';
+            str += `${name}, `;
+        }
+
+        str = str.slice(0, -2);
+        str += `\n${flag.description}\n\n`
+    }
+
+    return str;
+}

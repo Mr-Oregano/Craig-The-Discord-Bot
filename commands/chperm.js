@@ -6,7 +6,7 @@ module.exports = {
 
 	name: 'chperm',
     description: 'Sets the user(s) permissions for the current channel (or other channels specified by different options)',
-    usage: '<User> ... [Options] ...',
+    usage: '<User...> [Options ...]',
     args: true,
     guild: true,
 

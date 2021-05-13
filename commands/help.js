@@ -8,6 +8,7 @@ module.exports = {
 
 	name: 'help',
 	description: 'Displays a list of all commands or detailed information for specified command',
+	usage: '[Command]',
 	aliases: ['commands', 'cmds', 'h', 'hlp'],
 	
 	async execute(msg, body) 
@@ -27,7 +28,9 @@ module.exports = {
 
 			embed.setTitle(module.name);
 			embed.setDescription(module.description || 'No description provided.');
-			embed.addField('Usage', `${module.name} ${module.usage || ''}`);
+
+			let usage = `${CraigConfig.prefix}${module.name} ${module.usage || ''}`;
+			embed.addField('Usage', `\`${usage.trim()}\``);
 
 			if (module.aliases) 
 				embed.addField('Aliases', AliasesToString(module.aliases));
@@ -43,7 +46,7 @@ module.exports = {
 
 		let commands = "";
 		for (const [,module] of CommandModules.modules)
-			commands += `${CraigConfig.prefix}${module.name}\n`;
+			commands += ` - \`${module.name}\`\n`;
 
 		embed.addField('Commands usable in this channel', commands);
 		msg.channel.send(embed);

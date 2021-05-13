@@ -5,7 +5,7 @@ module.exports = {
 
 	name: 'prefix',
 	description: 'Display the current prefix configured for the bot, or set the prefix to the specified one.',
-	usage: '[New prefix]',
+	usage: '[Options]',
 	args: false,
 	guild: false,
 

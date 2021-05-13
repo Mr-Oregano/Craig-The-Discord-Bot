@@ -1,36 +1,36 @@
 module.exports = {
 
 	name: 'directmessage',
-    aliases: ['dm'],
-    description: 'Messages mentioned guild members with the specified message',
-    usage: '<User...> <Announcement>',
-    args: true,
-    guild: true,
+	aliases: ['dm'],
+	description: 'Messages mentioned guild members with the specified message',
+	usage: '<User...> <Announcement>',
+	args: true,
+	guild: true,
 
-    async execute(msg, body) 
-    {
-        let announcement = body.args[body.args.length - 1];
+	async execute(msg, body) 
+	{
+		let announcement = body.args[body.args.length - 1];
 
-        if (msg.mentions.everyone)
-        {
-            // everyone tag does not list all members
-            Broadcast(msg.guild.members, announcement);
-            return;
-        }
+		if (msg.mentions.everyone)
+		{
+			// everyone tag does not list all members
+			Broadcast(msg.guild.members, announcement);
+			return;
+		}
 
-        Broadcast(msg.mentions.members, announcement);
+		Broadcast(msg.mentions.members, announcement);
 	},
 };
 
 async function Broadcast(members, announcement)
 {
-    for (const [, member ] of members)
-    {
-        if (member.user.bot)
-            continue;
-        
-        // Must await to wait for channel handle
-        let channel = await member.createDM();
-        channel.send(announcement);
-    }
+	for (const [, member ] of members)
+	{
+		if (member.user.bot)
+			continue;
+		
+		// Must await to wait for channel handle
+		let channel = await member.createDM();
+		channel.send(announcement);
+	}
 }

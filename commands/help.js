@@ -7,75 +7,75 @@ const { MessageEmbed } = require("discord.js");
 module.exports = {
 
 	name: 'help',
-    description: 'Displays a list of all commands or detailed information for specified command',
+	description: 'Displays a list of all commands or detailed information for specified command',
 	aliases: ['commands', 'cmds', 'h', 'hlp'],
-    
-    async execute(msg, body) 
-    {
-        const embed = new MessageEmbed();
-        embed.setColor(Math.floor(Math.random() * 0xffffff));
+	
+	async execute(msg, body) 
+	{
+		const embed = new MessageEmbed();
+		embed.setColor(Math.floor(Math.random() * 0xffffff));
 
-        if (body.args.length > 0)
-        {
-            let module = CommandModules.modules.get(body.args[0]);
+		if (body.args.length > 0)
+		{
+			let module = CommandModules.modules.get(body.args[0]);
 
-            if (!module)
-            {
-                msg.channel.send(`The command '${body.args[0]}' was not found!`);
-                return;
-            }
+			if (!module)
+			{
+				msg.channel.send(`The command '${body.args[0]}' was not found!`);
+				return;
+			}
 
-            embed.setTitle(module.name);
-            embed.setDescription(module.description || 'No description provided.');
-            embed.addField('Usage', `${module.name} ${module.usage || ''}`);
+			embed.setTitle(module.name);
+			embed.setDescription(module.description || 'No description provided.');
+			embed.addField('Usage', `${module.name} ${module.usage || ''}`);
 
-            if (module.aliases) 
-                embed.addField('Aliases', AliasesToString(module.aliases));
+			if (module.aliases) 
+				embed.addField('Aliases', AliasesToString(module.aliases));
 
-            if (module.flags) 
-                embed.addField('Flags', FlagsToString(module.flags));
-            
-            msg.channel.send(embed);
-            return;
-        }
+			if (module.flags) 
+				embed.addField('Flags', FlagsToString(module.flags));
+			
+			msg.channel.send(embed);
+			return;
+		}
 
-        embed.setTitle('Commands');
+		embed.setTitle('Commands');
 
-        let commands = "";
-        for (const [,module] of CommandModules.modules)
-            commands += `${CraigConfig.prefix}${module.name}\n`;
+		let commands = "";
+		for (const [,module] of CommandModules.modules)
+			commands += `${CraigConfig.prefix}${module.name}\n`;
 
-        embed.addField('Commands usable in this channel', commands);
-        msg.channel.send(embed);
-       
+		embed.addField('Commands usable in this channel', commands);
+		msg.channel.send(embed);
+	   
 	},
 };
 
 function AliasesToString(aliases)
 {
-    return aliases.join(', ');
+	return aliases.join(', ');
 }
 
 function FlagsToString(flags)
 {
-    let str = "";
+	let str = "";
 
-    for (const flag of flags) 
-    {
-        let names = [ flag.name ];
+	for (const flag of flags) 
+	{
+		let names = [ flag.name ];
 
-        if (flag.aliases)
-            names = names.concat(flag.aliases);
+		if (flag.aliases)
+			names = names.concat(flag.aliases);
 
-        for (const name of names) 
-        {
-            str += name.length > 1 ? '--' : '-';
-            str += `${name}, `;
-        }
+		for (const name of names) 
+		{
+			str += name.length > 1 ? '--' : '-';
+			str += `${name}, `;
+		}
 
-        str = str.slice(0, -2);
-        str += `\n${flag.description}\n\n`
-    }
+		str = str.slice(0, -2);
+		str += `\n${flag.description}\n\n`
+	}
 
-    return str;
+	return str;
 }

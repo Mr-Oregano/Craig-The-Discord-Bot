@@ -20,7 +20,7 @@ module.exports = {
 		{
 			let module = CommandModules.modules.get(body.args[0]);
 
-			if (!module)
+			if (!module || (module.admin && !msg.member.permissions.has('ADMINISTRATOR')))
 			{
 				msg.channel.send(`The command '${body.args[0]}' was not found!`);
 				return;
@@ -46,7 +46,8 @@ module.exports = {
 
 		let commands = "";
 		for (const [,module] of CommandModules.modules)
-			commands += ` - \`${module.name}\`\n`;
+			if (!module.admin || (module.admin && msg.member.permissions.has('ADMINISTRATOR')))
+				commands += ` - \`${module.name}\`\n`;
 
 		embed.addField('Commands usable in this channel', commands);
 		msg.channel.send(embed);

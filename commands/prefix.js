@@ -8,6 +8,7 @@ module.exports = {
 	usage: '[OPTIONS]',
 	args: false,
 	guild: false,
+	admin: true,
 
 	flags: [
 		{

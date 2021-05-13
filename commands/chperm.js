@@ -10,6 +10,7 @@ module.exports = {
 	usage: '<PERMS> <USER...> [CHANNEL...] [OPTIONS ...]',
 	args: true,
 	guild: true,
+	admin: true,
 
 	flags: [
 		{

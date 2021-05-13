@@ -25,6 +25,12 @@ module.exports = {
 			return;
 		}
 
+		if (command_module.admin && !msg.member.permissions.has('ADMINISTRATOR'))
+		{
+			msg.channel.send("This command can only be used by an admin you silly dick!");
+			return;
+		}
+
 		if (command_module.guild && msg.channel.type !== 'text')
 		{
 			msg.channel.send("This is a guild command can only be used in 'text' channel!");

@@ -6,6 +6,7 @@ module.exports = {
 	usage: '<USER...> <MESSAGE>',
 	args: true,
 	guild: true,
+	admin: true,
 
 	async execute(msg, body) 
 	{

@@ -19,7 +19,7 @@ module.exports = {
 		}
 	],
 
-	async execute(msg, body) 
+	execute(msg, body) 
 	{
 		if (body.flags.set)
 		{

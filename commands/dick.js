@@ -37,7 +37,7 @@ module.exports = {
 	args: false,
 	guild: true,
 
-	async execute(msg) 
+	execute(msg) 
 	{
 		let user = msg.author;
 

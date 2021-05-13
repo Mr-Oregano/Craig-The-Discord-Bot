@@ -9,7 +9,7 @@ module.exports = {
 	args: false,
 	guild: true,
 
-	async execute(msg) 
+	execute(msg) 
 	{
 		const guild = msg.guild;
 

@@ -30,7 +30,7 @@ module.exports = {
 		}
 	],
 
-	async execute(msg, body) 
+	execute(msg, body) 
 	{
 		const newperms_bitfield = parseInt(body.args[0]);
 

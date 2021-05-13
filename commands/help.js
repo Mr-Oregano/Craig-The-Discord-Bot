@@ -11,7 +11,7 @@ module.exports = {
 	usage: '[COMMAND]',
 	aliases: ['commands', 'cmds', 'h', 'hlp'],
 	
-	async execute(msg, body) 
+	execute(msg, body) 
 	{
 		const embed = new MessageEmbed();
 		embed.setColor(Math.floor(Math.random() * 0xffffff));

@@ -10,7 +10,7 @@ module.exports = {
 	args: true,
 	guild: true,
 
-	async execute(msg)
+	execute(msg)
 	{
 		let user = msg.mentions.members.first().user;
 		const embed = new MessageEmbed()

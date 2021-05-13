@@ -20,7 +20,7 @@ module.exports = {
 		},
 	],
 
-	async execute(msg, body) 
+	execute(msg, body) 
 	{
 		let announcement = undefined;
 		
@@ -48,7 +48,7 @@ module.exports = {
 	},
 };
 
-async function Broadcast(members, announcement)
+function Broadcast(members, announcement)
 {
 	for (const [, member ] of members)
 	{

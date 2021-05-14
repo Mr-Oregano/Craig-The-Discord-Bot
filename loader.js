@@ -13,18 +13,18 @@ function OnMessage(msg)
 	if (!msg.content.startsWith(CraigConfig.prefix) || msg.author.bot)
 		return;
 
-	let command = CommandParser.Parse(msg, CraigConfig.prefix);
+	let module = CommandParser.Parse(msg, CraigConfig.prefix);
 	
-	if (!command)
+	if (!module)
 		return;
 
-	command.execute(msg, command.body);
+	module.execute(msg, module.cmd);
 }
 
 function OnStart()
 {
 	Database.Initialize();
-
+	
 	console.log('Craig has connected to the server!');
 	client.user.setActivity('your mom naked 😏', { type: 'WATCHING' });
 }

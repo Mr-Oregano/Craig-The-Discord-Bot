@@ -4,40 +4,37 @@ const Discord = require('discord.js');
 const FileSystem = require('fs');
 const Path = require("path")
 
-module.exports = {
+const modules = new Discord.Collection();
 
-	modules: new Discord.Collection(),
-
-	GetCommandModule(name) 
-	{
-		const command_modules = module.exports.modules;
-		return command_modules.get(name) || command_modules.find(cmd => cmd.aliases && cmd.aliases.includes(name));
-	}	
-}
-
-const command_modules = module.exports.modules;
+function GetCommandModule(name) 
+{
+	return modules.get(name) || modules.find(module => module.aliases && module.aliases.includes(name));
+}	
 
 function GetAllModules(dir, result) 
 {
-  let files = FileSystem.readdirSync(dir);
-  result = result || [];
+	let files = FileSystem.readdirSync(dir);
+	result = result || [];
 
-  files.forEach(file => 
-  {
-    if (FileSystem.statSync(dir + "/" + file).isDirectory())
-      result = GetAllModules(dir + "/" + file, result);
-     
-	else if (file.endsWith('.js'))
-      result.push(Path.join(__dirname, dir, "/", file));
-  });
+	files.forEach(file => 
+	{
+		if (FileSystem.statSync(dir + "/" + file).isDirectory())
+			result = GetAllModules(dir + "/" + file, result);
 
-  return result;
+		else if (file.endsWith('.js'))
+			result.push(Path.join(__dirname, dir, "/", file));
+	});
+
+	return result;
 }
 
-let modules = GetAllModules('./commands');
+const paths = GetAllModules('./commands');
 
-for (const module of modules) 
+for (const path of paths) 
 {
-	const command = require(module);
-	command_modules.set(command.name, command);
+	const command = require(path);
+	modules.set(command.name, command);
 }
+
+module.exports.GetCommandModule = GetCommandModule;
+module.exports.modules = modules;

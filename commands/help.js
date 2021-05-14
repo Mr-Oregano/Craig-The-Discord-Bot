@@ -18,7 +18,7 @@ module.exports = {
 
 		if (cmd.args.length > 0)
 		{
-			let module = CommandModules.modules.get(cmd.args[0]);
+			let module = CommandModules.GetCommandModule(cmd.args[0]);
 
 			if (!module || (module.admin && !msg.member.permissions.has('ADMINISTRATOR')))
 			{

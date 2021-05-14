@@ -16,11 +16,13 @@ module.exports = {
 		{
 			name: 'message',
 			aliases: [ 'm' ],
+			args: 1,
 			description: 'Message to send to the specified members'
 		},
 		{
 			name: 'count',
 			aliases: [ 'c' ],
+			args: 1,
 			description: 'How many times you would like to send the message to the users'
 		}
 	],
@@ -34,7 +36,8 @@ module.exports = {
 			announcement = cmd.flags.message[0];
 
 		else if (cmd.args.length > 0)
-			announcement = cmd.args[cmd.args.length - 1];
+			// find the first argument that isn't a mention
+			announcement = cmd.args.find(arg => !/<[@#]!?\d+>/g.test(arg)); 
 
 		if (!announcement)
 		{

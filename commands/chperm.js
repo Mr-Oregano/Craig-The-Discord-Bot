@@ -32,11 +32,12 @@ module.exports = {
 
 	execute(msg, cmd) 
 	{
-		const newperms_bitfield = parseInt(cmd.args[0]);
+		// find the first argument that isn't a mention
+		const newperms_bitfield = parseInt(cmd.args.find(arg => !/<[@#]!?\d+>/g.test(arg)));
 
 		if (isNaN(newperms_bitfield))
 		{
-			msg.reply('You must specify the permissions bitfield as the first argument!');
+			msg.reply('You must specify the permissions bitfield as an argument!');
 			return;
 		}
 

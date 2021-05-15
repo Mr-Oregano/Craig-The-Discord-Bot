@@ -35,14 +35,14 @@ function Parse(msg, prefix)
 
 	let cmd = { args: args.commands, flags: new Object() };
 	
-	module.flags = module.flags || [];
+	let module_flags = module.flags || [];
 	
 	// merge long and short switches
 	const switches = Object.assign(args.longSwitches, args.shortSwitches); 
 
 	for (const s in switches)
 	{
-		let key = module.flags.find(flag => flag.name === s || (flag.aliases && flag.aliases.includes(s)));
+		let key = module_flags.find(flag => flag.name === s || (flag.aliases && flag.aliases.includes(s)));
 
 		if (!key)
 		{

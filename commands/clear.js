@@ -9,10 +9,15 @@ module.exports = {
 
 	async execute(msg, cmd) 
 	{
-		let amount = parseInt(cmd.args[0]);
+		let amount = parseInt(cmd.args[0]); 
 
 		if (isNaN(amount))
 			return msg.reply("The specified argument is *not* a number");
+
+		// NOTE: We add +1 to the amount since we don't count
+		// the $clear command itself as a message.
+		//
+		++amount;
 
 		for (; amount > 0; amount -= 100)
 			await msg.channel.bulkDelete(Math.min(amount, 100), true);

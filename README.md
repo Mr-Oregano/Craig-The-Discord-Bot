@@ -1,6 +1,6 @@
 # Craig-The-Discord-Bot
 
-Craig the discord bot. Utility bot written with DiscordJS. For messing
+Craig the discord bot. Utility bot written with DiscordJS. For messing around with stuff.
 
 ### Trello
 

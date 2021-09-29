@@ -1,6 +1,6 @@
 
 // Dependencies
-const CraigConfig = require('../config.json');
+const CraigConfig = require('../data/config.json');
 const CommandModules = require('../command-modules.js');
 const { MessageEmbed } = require("discord.js");
 
@@ -52,7 +52,7 @@ module.exports = {
 		embed.addField('Commands usable in this channel', commands);
 		msg.channel.send(embed);
 	   
-	},
+	}
 };
 
 function AliasesToString(aliases)

@@ -1,5 +1,5 @@
 
-const CraigConfig = require('../config.json');
+const CraigConfig = require('../data/config.json');
 
 module.exports = {
 

@@ -39,9 +39,9 @@ module.exports = {
 		// NOTE: Currently just pulling the first argument in the list.
 		//
 		const src_type = DeduceSourceType(cmd.args[0]);
-		const voice = msg.member.voice;
+		const vc = msg.member.voice.channel;
 
-		if (!voice)
+		if (!vc)
 		{
 			msg.reply("You need to be in a voice channel you dumb fuck.");
 			return;
@@ -49,7 +49,7 @@ module.exports = {
 
 		switch (src_type)
 		{
-			case SourceType.URL_YOUTUBE: PlayYoutube(voice.channel, cmd.args[0]); break;
+			case SourceType.URL_YOUTUBE: PlayYoutube(vc, cmd.args[0]); break;
 			default: msg.reply("The provided source is unsupported currently.");
 		}
 	}

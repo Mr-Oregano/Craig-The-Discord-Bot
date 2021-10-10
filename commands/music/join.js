@@ -7,7 +7,7 @@ module.exports = {
 	args: false,
 	guild: true,
 
-	execute(msg, cmd) 
+	execute(msg) 
 	{
 		const vc = msg.member.voice.channel;
 

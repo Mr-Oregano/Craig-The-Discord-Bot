@@ -39,6 +39,9 @@ module.exports = {
 			return;
 		}
 
+		// TODO: Handle when the bot is disconnected from vc.
+		//
+
 		// TODO: Several cases for source type, figure out a way to filter/handle dynamically:
 		//
 		//		 has --file flag specified -> SRC_FILE
@@ -96,6 +99,7 @@ async function PlayQueue(msg, ctx)
 {
 	const vc = msg.member.voice.channel;
 	const queue = ctx.music.queue;
+
 	const connection = await vc.join();
 
 	while (queue.length > 0)

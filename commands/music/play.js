@@ -1,5 +1,16 @@
 
 const ytdl = require('ytdl-core-discord');
+const { MessageEmbed } = require("discord.js");
+
+const SourceType = 
+{
+	FILE: "FILE",
+	URL_YOUTUBE: "URL_YOUTUBE",
+	URL_SPOTIFY: "URL_SPOTIFY",
+	URL_SOUNDCLOUD: "URL_SOUNDCLOUD",
+	QUERY_YOUTUBE: "QUERY_YOUTUBE",
+	UNKNOWN: "UNKNOWN"
+}
 
 module.exports = {
 
@@ -18,8 +29,16 @@ module.exports = {
 		}
 	],
 
-	execute(msg, cmd) 
+	async execute(msg, cmd, ctx) 
 	{
+		const vc = msg.member.voice.channel;
+
+		if (!vc)
+		{
+			msg.reply("You need to be in a voice channel you dumb fuck.");
+			return;
+		}
+
 		// TODO: Several cases for source type, figure out a way to filter/handle dynamically:
 		//
 		//		 has --file flag specified -> SRC_FILE
@@ -32,38 +51,36 @@ module.exports = {
 		//		 of a video to play 
 
 		// TODO: Add support for SoundCloud, Spotify, etc. urls (sources other than YouTube)
-
-		// TODO: Implement some queue system that can be used by all the voice commands 
 		//
+		const url = cmd.args[0];
+		const src_type = DeduceSourceType(url);
 
-		// NOTE: Currently just pulling the first argument in the list.
-		//
-		const src_type = DeduceSourceType(cmd.args[0]);
-		const vc = msg.member.voice.channel;
-
-		if (!vc)
+		if (src_type != SourceType.URL_YOUTUBE) 
 		{
-			msg.reply("You need to be in a voice channel you dumb fuck.");
+			const embed = new MessageEmbed();
+			embed.setColor(0xff0000);
+			embed.setDescription(`Unknown source type...`);
+			msg.channel.send(embed);
 			return;
 		}
 
-		switch (src_type)
+		let queue = ctx.music.queue;
+		queue.push({ type: src_type, url: url });
+
+		if (queue.length > 1)
 		{
-			case SourceType.URL_YOUTUBE: PlayYoutube(vc, cmd.args[0]); break;
-			default: msg.reply("The provided source is unsupported currently.");
+			let info = await ytdl.getInfo(url);
+
+			const embed = new MessageEmbed();
+			embed.setColor(0xf71d5e);
+			embed.setDescription(`Queued [${info.videoDetails.title}](${url}) [${msg.member.user}]`);
+			msg.channel.send(embed);
+			return;
 		}
+
+		PlayQueue(msg, ctx);		
 	}
 };
-
-const SourceType = 
-{
-	FILE: "FILE",
-	URL_YOUTUBE: "URL_YOUTUBE",
-	URL_SPOTIFY: "URL_SPOTIFY",
-	URL_SOUNDCLOUD: "URL_SOUNDCLOUD",
-	QUERY_YOUTUBE: "QUERY_YOUTUBE",
-	UNKNOWN: "UNKNOWN"
-}
 
 function DeduceSourceType(arg)
 {
@@ -75,8 +92,30 @@ function DeduceSourceType(arg)
 	return SourceType.UNKNOWN;
 }
 
-async function PlayYoutube(vc, src) 
+async function PlayQueue(msg, ctx)
 {
+	const vc = msg.member.voice.channel;
+	const queue = ctx.music.queue;
 	const connection = await vc.join();
-	connection.play(await ytdl(src), { type: 'opus' });
-}
+
+	while (queue.length > 0)
+	{
+		let src = ctx.music.queue[0];
+
+		// TODO: Currently assuming provided source is YouTube url.
+		//
+		let broadcast = await ytdl(src.url);
+		let info = await ytdl.getInfo(src.url);
+
+		const embed = new MessageEmbed();
+		embed.setColor(0xfcfc05);
+		embed.setTitle("Now playing");
+		embed.setDescription(`[${info.videoDetails.title}](${src.url}) [${msg.member.user}]`);
+		msg.channel.send(embed);
+
+		let dispatcher = connection.play(broadcast, { type: 'opus' });
+		await new Promise(fulfill => dispatcher.on('finish', fulfill));
+		
+		queue.shift();
+	}
+};

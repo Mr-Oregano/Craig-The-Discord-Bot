@@ -1,6 +1,7 @@
 
 // Dependencies
 const Discord = require('discord.js');
+const Context = {};
 
 const CraigConfig = require('./data/config.json');
 const Database = require('./data/database.js');
@@ -18,12 +19,18 @@ function OnMessage(msg)
 	if (!module)
 		return;
 
-	module.execute(msg, module.cmd);
+	module.execute(msg, module.cmd, Context);
 }
 
 function OnStart()
 {
 	Database.Initialize();
+
+	// TODO: Implement generic module-based command system. Each module contains a suite of 
+	//		 commands and, optionally, a context shared between those commands.
+	//		
+	Context.music = {};
+	Context.music.queue = [];
 	
 	console.log('Craig has connected to the server!');
 	client.user.setActivity('your mom naked 😏', { type: 'WATCHING' });

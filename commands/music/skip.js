@@ -17,11 +17,11 @@ module.exports = {
 			return;
 		}
 
-		let current = ctx.music.current;
-		if (!current)
+		let currentDispatcher = ctx.music.currentDispatcher;
+		if (!currentDispatcher)
 			return;
 
-		current.end();
+		currentDispatcher.end();
 		msg.react('👌');
 	}
 };

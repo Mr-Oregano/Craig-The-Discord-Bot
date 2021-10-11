@@ -129,7 +129,7 @@ async function PlayQueue(msg, ctx)
 		msg.channel.send(embed);
 		
 		let dispatcher = connection.play(await LoadStream(src), { type: 'opus' });
-		ctx.music.current = dispatcher; // Set the currently playing track.
+		ctx.music.currentDispatcher = dispatcher; // Set the currently playing track.
 		await new Promise(fulfill => dispatcher.on('finish', fulfill));
 		
 		queue.shift();

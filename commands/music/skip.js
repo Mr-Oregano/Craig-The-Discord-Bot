@@ -22,5 +22,6 @@ module.exports = {
 			return;
 
 		current.end();
+		msg.react('👌');
 	}
 };

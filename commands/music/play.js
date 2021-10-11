@@ -105,19 +105,20 @@ async function PlayQueue(msg, ctx)
 	while (queue.length > 0)
 	{
 		let src = ctx.music.queue[0];
-
+		
 		// TODO: Currently assuming provided source is YouTube url.
 		//
-		let broadcast = await ytdl(src.url);
+		let stream = await ytdl(src.url);
 		let info = await ytdl.getInfo(src.url);
-
+		
 		const embed = new MessageEmbed();
 		embed.setColor(0xfcfc05);
 		embed.setTitle("Now playing");
 		embed.setDescription(`[${info.videoDetails.title}](${src.url}) [${msg.member.user}]`);
 		msg.channel.send(embed);
-
-		let dispatcher = connection.play(broadcast, { type: 'opus' });
+		
+		let dispatcher = connection.play(stream, { type: 'opus' });
+		ctx.music.current = dispatcher; // Set the currently playing track.
 		await new Promise(fulfill => dispatcher.on('finish', fulfill));
 		
 		queue.shift();

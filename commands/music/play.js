@@ -55,10 +55,9 @@ module.exports = {
 
 		// TODO: Add support for SoundCloud, Spotify, etc. urls (sources other than YouTube)
 		//
-		const url = cmd.args[0];
-		const src_type = DeduceSourceType(url);
+		const src = await CreateSource(cmd.args[0]);
 
-		if (src_type != SourceType.URL_YOUTUBE) 
+		if (!src) 
 		{
 			const embed = new MessageEmbed();
 			embed.setColor(0xff0000);
@@ -68,15 +67,13 @@ module.exports = {
 		}
 
 		let queue = ctx.music.queue;
-		queue.push({ type: src_type, url: url });
+		queue.push(src);
 
 		if (queue.length > 1)
 		{
-			let info = await ytdl.getInfo(url);
-
 			const embed = new MessageEmbed();
 			embed.setColor(0xf71d5e);
-			embed.setDescription(`Queued [${info.videoDetails.title}](${url}) [${msg.member.user}]`);
+			embed.setDescription(`Queued [${src.title}](${src.url}) [${msg.member.user}]`);
 			msg.channel.send(embed);
 			return;
 		}
@@ -85,14 +82,33 @@ module.exports = {
 	}
 };
 
-function DeduceSourceType(arg)
+async function CreateSource(srcStr)
 {
+	let src = {};
+	
 	// YouTube URL test.
 	//
-	if (arg.includes("www.youtube.com") || arg.includes("youtu.be"))
-		return SourceType.URL_YOUTUBE;
+	if (ytdl.validateURL(srcStr))
+	{
+		src.type = SourceType.URL_YOUTUBE;
 
-	return SourceType.UNKNOWN;
+		// Load video info
+		const info = await ytdl.getInfo(srcStr);
+		src.length = info.videoDetails.lengthSeconds;
+		src.title = info.videoDetails.title;
+		src.url = info.videoDetails.video_url;
+		return src;
+	}
+
+	return;
+}
+
+async function LoadStream(src)
+{
+	switch (src.type)
+	{
+	case SourceType.URL_YOUTUBE: return await ytdl(src.url);
+	}
 }
 
 async function PlayQueue(msg, ctx)
@@ -106,18 +122,13 @@ async function PlayQueue(msg, ctx)
 	{
 		let src = ctx.music.queue[0];
 		
-		// TODO: Currently assuming provided source is YouTube url.
-		//
-		let stream = await ytdl(src.url);
-		let info = await ytdl.getInfo(src.url);
-		
 		const embed = new MessageEmbed();
 		embed.setColor(0xfcfc05);
 		embed.setTitle("Now playing");
-		embed.setDescription(`[${info.videoDetails.title}](${src.url}) [${msg.member.user}]`);
+		embed.setDescription(`[${src.title}](${src.url}) [${msg.member.user}]`);
 		msg.channel.send(embed);
 		
-		let dispatcher = connection.play(stream, { type: 'opus' });
+		let dispatcher = connection.play(await LoadStream(src), { type: 'opus' });
 		ctx.music.current = dispatcher; // Set the currently playing track.
 		await new Promise(fulfill => dispatcher.on('finish', fulfill));
 		

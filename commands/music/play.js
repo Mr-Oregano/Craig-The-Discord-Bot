@@ -55,7 +55,7 @@ module.exports = {
 
 		// TODO: Add support for SoundCloud, Spotify, etc. urls (sources other than YouTube)
 		//
-		const src = await CreateSource(cmd.args[0]);
+		const src = await CreateSource(cmd.args[0], msg.member.user);
 
 		if (!src) 
 		{
@@ -73,7 +73,7 @@ module.exports = {
 		{
 			const embed = new MessageEmbed();
 			embed.setColor(0xf71d5e);
-			embed.setDescription(`Queued [${src.title}](${src.url}) [${msg.member.user}]`);
+			embed.setDescription(`Queued [${src.title}](${src.url}) [${src.author}]`);
 			msg.channel.send(embed);
 			return;
 		}
@@ -82,7 +82,7 @@ module.exports = {
 	}
 };
 
-async function CreateSource(srcStr)
+async function CreateSource(srcStr, author)
 {
 	let src = {};
 	
@@ -97,6 +97,7 @@ async function CreateSource(srcStr)
 		src.length = info.videoDetails.lengthSeconds;
 		src.title = info.videoDetails.title;
 		src.url = info.videoDetails.video_url;
+		src.author = author;
 		return src;
 	}
 
@@ -125,7 +126,7 @@ async function PlayQueue(msg, ctx)
 		const embed = new MessageEmbed();
 		embed.setColor(0xfcfc05);
 		embed.setTitle("Now playing");
-		embed.setDescription(`[${src.title}](${src.url}) [${msg.member.user}]`);
+		embed.setDescription(`[${src.title}](${src.url}) [${src.author}]`);
 		msg.channel.send(embed);
 		
 		let dispatcher = connection.play(await LoadStream(src), { type: 'opus' });

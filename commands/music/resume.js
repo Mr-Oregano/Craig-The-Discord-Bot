@@ -1,9 +1,9 @@
 
 module.exports = {
 
-	name: 'skip',
-	aliases: ['sk', 'next'],
-	description: 'Skips the currently playing track in the queue (must be in a voice channel to use).',
+	name: 'resume',
+	aliases: ['rs'],
+	description: 'Resume the currently stopped track.',
 	args: false,
 	guild: true,
 
@@ -24,7 +24,13 @@ module.exports = {
 			return;
 		}
 
-		currentDispatcher.end();
+		if (!currentDispatcher.paused)
+		{
+			msg.reply("The track isn't paused you silly goose.");
+			return;
+		}
+
+		currentDispatcher.resume();
 		msg.react('👌');
 	}
 };

@@ -19,7 +19,10 @@ module.exports = {
 
 		let currentDispatcher = ctx.music.currentDispatcher;
 		if (!currentDispatcher)
+		{
+			msg.reply("There is no track playing.");
 			return;
+		}
 
 		currentDispatcher.end();
 		msg.react('👌');

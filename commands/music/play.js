@@ -131,8 +131,13 @@ async function PlayQueue(msg, ctx)
 		
 		let dispatcher = connection.play(await LoadStream(src), { type: 'opus' });
 		ctx.music.currentDispatcher = dispatcher; // Set the currently playing track.
+		ctx.music.currentSrc = src;
 		await new Promise(fulfill => dispatcher.on('finish', fulfill));
-		
+
+		// NOTE: No longer playing anything.
+		ctx.music.currentDispatcher = undefined; 
+		ctx.music.currentSrc = undefined;
+
 		queue.shift();
 	}
 };

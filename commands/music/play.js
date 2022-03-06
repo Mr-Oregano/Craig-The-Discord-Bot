@@ -108,7 +108,7 @@ async function LoadStream(src)
 {
 	switch (src.type)
 	{
-	case SourceType.URL_YOUTUBE: return await ytdl(src.url, { filter: 'audioonly', quality: 'highestaudio' });
+	case SourceType.URL_YOUTUBE: return await ytdl(src.url, { filter: 'audioonly' });
 	}
 }
 

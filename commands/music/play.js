@@ -108,7 +108,7 @@ async function LoadStream(src)
 {
 	switch (src.type)
 	{
-	case SourceType.URL_YOUTUBE: return await ytdl(src.url, { filter: 'audioonly' });
+	case SourceType.URL_YOUTUBE: return await ytdl(src.url);
 	}
 }
 
@@ -132,6 +132,7 @@ async function PlayQueue(msg, ctx)
 		let dispatcher = connection.play(await LoadStream(src), { type: 'opus' });
 		ctx.music.currentDispatcher = dispatcher; // Set the currently playing track.
 		ctx.music.currentSrc = src;
+		
 		await new Promise(fulfill => dispatcher.on('finish', fulfill));
 
 		// NOTE: No longer playing anything.
